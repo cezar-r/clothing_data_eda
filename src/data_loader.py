@@ -58,7 +58,6 @@ class Data:
 				print((f"Couldn't find '{column}' column, continuing\n"))
 				
 		for column in self.dataframe.columns.values:
-			pass
 			if len(self.dataframe) - self.dataframe[column].isna().sum() > max_non_nans:
 				max_non_nans = len(self.dataframe) - self.dataframe[column].isna().sum()
 		for column in self.dataframe.columns.values:
