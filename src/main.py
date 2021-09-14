@@ -7,7 +7,7 @@ def main():
 	df = d.dataframe
 	# d = Data(auto_load = False)
 	# df = d.load_data()
-	#
+	
 	eda = EDA(df)
 	eda.ratings_per_product_most_popular()
 	eda.ratings_per_product_least_popular()
