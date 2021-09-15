@@ -1,27 +1,42 @@
-import pandas as pd 
+#!/usr/bin/env python
+# coding: utf-8
+
+'''
+File containing the EDA object, which contains several methods for various analytics
+Most analytics are done through two private functions: _plotting_helper() and _attributes_helper
+'''
+
 import numpy as np 
 import matplotlib.pyplot as plt 
 
 class EDA:
+	"""Object that is used for the main data analytics"""
 
 	def __init__(self, data, style = "dark_background"):
 		plt.style.use(style)
 		self.data = data
 
 
-	def ratings_counts(self, show_total = True, show_avg = True):
+	def ratings_counts(self, show_total = True, show_avg = True, save_img = True):
 		counts = self.data.rating.value_counts()
-		plt.bar(counts.index.values, counts.values)
 		title = 'Ratings'
+		og_title_text = title
 		if show_total:
 			title += f'\nTotal: {sum(counts.values)}'
 		if show_avg:
 			title += f'\nAverage: {round(np.mean(self.data.rating.values), 2)}'
-		plt.title(title)
-		plt.ylabel("Count")
-		plt.xlabel("Rating")
+
+		fig, ax = plt.subplots()
+
+		ax.bar(counts.index.values, counts.values)
+		ax.set_title(title)
+		ax.set_ylabel("Count")
+		ax.set_xlabel("Rating")
 		plt.tight_layout()
-		plt.show()
+		if save_img:
+			plt.savefig(f'../images/{og_title_text.replace(" ", "_")}.png')
+		else:
+			plt.show()
 
 
 	def _plotting_helper(self, show, grouping_column, title_text, xlabel, mean = True, reverse = False, sort = True, save_img = True):
@@ -90,7 +105,6 @@ class EDA:
 
 		og_title_text = title_text
 
-
 		fig, ax = plt.subplots() # had to instantiate plot this way to be able to edit xticks w strings
 		ax.bar(x - width/2, list(feedback_dict.values())[0], width, label = list(feedback_dict.keys())[0])
 		ax.bar(x + width/2, list(feedback_dict.values())[1], width, label = list(feedback_dict.keys())[1])
@@ -104,7 +118,6 @@ class EDA:
 			plt.savefig(f'../images/{og_title_text.replace(" ", "_")}.png')
 		else:
 			plt.show()
-
 
 	def ratings_per_product_most_popular(self, show = 30):
 		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID', mean = True, reverse = False)
