@@ -18,9 +18,7 @@ def main():
 	
 	eda = EDA(df)
 	eda.ratings_counts()
-	# eda.ratings_counts()
 
-	'''
 	# plots average rating for each of the 30 most popular products (in terms of rating counts)
 	eda.ratings_per_product_most_popular()
 
@@ -56,7 +54,7 @@ def main():
 
 	# plots the fit feedback based on the two different user attributes
 	eda.fit_feedback_vs_user_attribute()
-	'''
-
+	
+	
 if __name__ == '__main__':
 	main()
