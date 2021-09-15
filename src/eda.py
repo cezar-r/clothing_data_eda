@@ -49,7 +49,7 @@ class EDA:
 
 		og_title_text = title_text
 
-		title_text += f' ({len(x)})\nAverage - {round(np.mean(y), 2)}'
+		title_text += f'\nAverage - {round(np.mean(y), 2)}'
 		if len(x) > 20:
 			plt.figure(figsize = (len(x) / 3, 5))
 
@@ -106,17 +106,17 @@ class EDA:
 			plt.show()
 
 
-	def ratings_per_product_most_popular(self, show = 50):
-		self._plotting_helper(show, 'item_id', title_text = 'Average Ratings per Product - Most Popular Products', xlabel = 'Product ID', mean = True, reverse = False)
+	def ratings_per_product_most_popular(self, show = 30):
+		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID', mean = True, reverse = False)
 
-	def ratings_per_product_least_popular(self, show = 50):
-		self._plotting_helper(show, 'item_id', title_text = 'Average Ratings per Product - Least Popular Products', xlabel = 'Product ID', mean = True, reverse = True)
+	def ratings_per_product_least_popular(self, show = 30):
+		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Least Popular Products ({show})', xlabel = 'Product ID', mean = True, reverse = True)
 
-	def ratings_count_per_product_most_popular(self, show = 50):
-		self._plotting_helper(show, 'item_id', title_text = 'Total Ratings per Product - Most Popular Products', xlabel = 'Product ID',  mean = False, reverse = False)
+	def ratings_count_per_product_most_popular(self, show = 30):
+		self._plotting_helper(show, 'item_id', title_text = f'Total Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID',  mean = False, reverse = False)
 
-	def ratings_count_per_product_least_popular(self, show = 50):
-		self._plotting_helper(show, 'item_id', title_text = 'Total Ratings per Product - Least Popular Products', xlabel = 'Product ID', mean = False, reverse = True)
+	def ratings_count_per_product_least_popular(self, show = 30):
+		self._plotting_helper(show, 'item_id', title_text = f'Total Ratings per Product - Least Popular Products ({show})', xlabel = 'Product ID', mean = False, reverse = True)
 
 	def ratings_per_category(self, show = 4):
 		self._plotting_helper(show, 'category', title_text = 'Average Ratings per Category', xlabel = 'Category', mean = True, reverse = False)
