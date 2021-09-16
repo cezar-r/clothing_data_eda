@@ -6,7 +6,7 @@ from error_messages import *
 import warnings
 
 '''
-File containing the Data object, which is used for loading in data
+File containing the Data object, which is used for loading in data.
 '''
 
 
