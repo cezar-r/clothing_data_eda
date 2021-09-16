@@ -25,7 +25,6 @@ class Data:
 				ignore_na = False, 
 				column_drop_rate = .5,
 				drop_cols = []) -> pd.DataFrame():
-		# column_drop_rate = max ratio of NaN/Whole data in column needed to drop said column, between 0-1
 		"""Main method in which data is loaded from a csv file
 
 		Parameters
