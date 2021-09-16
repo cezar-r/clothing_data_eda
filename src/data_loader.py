@@ -13,6 +13,12 @@ File containing the Data object, which is used for loading in data
 class Data:
 
 	def __init__(self, auto_load = True):
+		"""
+		
+		Parameters
+		----------
+		auto_laod: bool 			if true, Data object will automatically load data with default parameters
+		"""
 		if auto_load:
 			self.load_data()
 
@@ -37,7 +43,6 @@ class Data:
 		column_drop_rate: float 	minimum ratio of NaN/non-NaN that can be allowed in a column (drop cols where >=.5 of its values are NaN)
 		drop_cols: list 			list of columns to be dropped
 		"""
-
 		if (fill_na or drop_na or ignore_na) is not True:
 			raise ArgumentError(f"At least one NaN argument must be true:\nfill_na = {fill_na}  drop_na = {drop_na}   ignore_na = {ignore_na}")
 		if (fill_na and drop_na):
