@@ -24,13 +24,13 @@ class Data:
 
 
 	def load_data(self, 
-				filename = '../data/modcloth_data.txt', 
-				fill_na = False, 
-				fill_symbol = None, 
-				drop_na = True, 
-				ignore_na = False, 
-				column_drop_rate = .5,
-				drop_cols = []) -> pd.DataFrame():
+			filename = '../data/modcloth_data.txt', 
+			fill_na = False, 
+			fill_symbol = None, 
+			drop_na = True, 
+			ignore_na = False, 
+			column_drop_rate = .5,
+			drop_cols = []) -> pd.DataFrame():
 		"""Main method in which data is loaded from a csv file
 
 		Parameters
