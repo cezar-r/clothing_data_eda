@@ -17,6 +17,8 @@ def main():
 	# df = d.load_data()
 	
 	eda = EDA(df)
+
+	# plots count of each rating
 	eda.ratings_counts()
 
 	# plots average rating for each of the 30 most popular products (in terms of rating counts)
