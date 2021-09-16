@@ -12,7 +12,7 @@ File containing the Data object, which is used for loading in data
 
 class Data:
 
-	def __init__(self, auto_load = True) -> None:
+	def __init__(self, auto_load = True):
 		if auto_load:
 			self.load_data()
 
