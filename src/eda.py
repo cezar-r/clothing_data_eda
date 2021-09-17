@@ -8,7 +8,6 @@ Most analytics are done through two private functions: _plotting_helper() and _a
 
 import numpy as np 
 import matplotlib.pyplot as plt 
-from datetime import datetime
 
 
 class EDA:
