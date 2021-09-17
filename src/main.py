@@ -42,6 +42,9 @@ def main():
 	# plots average rating year by year
 	eda.rating_per_year()
 
+	# plots the number of ratings year by year
+	eda.rating_count_per_year()
+
 	# plots count of different fit feedbacks
 	eda.fit_feedback()
 
@@ -57,11 +60,11 @@ def main():
 	# plots the fit feedback based on the two different user attributes
 	eda.fit_feedback_vs_user_attribute()
 
-	# plots the number of ratings each year
-	eda.ratings_per_year()
-
 	# plots the number of ratings each category got each year
 	eda.category_popular_per_year()
-	
+
+	# plots the most popular months, on average
+	eda.most_popular_months()
+
 if __name__ == '__main__':
 	main()
