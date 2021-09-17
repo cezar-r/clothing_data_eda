@@ -16,7 +16,7 @@ def main():
 	# d = Data(auto_load = False)
 	# df = d.load_data()
 	
-	eda = EDA(df, save_images = False)
+	eda = EDA(df)
 
 	# plots count of each rating
 	eda.ratings_counts()
