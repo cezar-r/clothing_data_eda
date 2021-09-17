@@ -172,6 +172,13 @@ class EDA:
 
 
 	def _month_to_string(self, x):
+		"""Converts string between 01 - 12 to month
+
+		Parameters
+		----------
+
+		x: str 					string to be converted to month
+		"""
 		month_hash = {'01' : 'January',
 					'02' : 'February',
 					'03' : 'March',
