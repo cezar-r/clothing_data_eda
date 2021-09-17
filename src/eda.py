@@ -338,12 +338,3 @@ class EDA:
 		"""
 		self._attributes_helper("user_attr", title_text = 'Fit Feedback vs User Attributes', scaled = scaled)
 
-
-if __name__ == '__main__':
-	from data_loader import Data
-
-	d = Data()
-	df = d.dataframe
-
-	eda = EDA(df, save_images = False)
-	eda.category_popular_per_year()
