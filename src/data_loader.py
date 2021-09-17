@@ -80,7 +80,9 @@ class Data:
 		
 		Parameters
 		----------
-		rate: float 				minimum ratio of NaN/non-NaN that can be allowed in a column (drop cols where >=.5 of its values are NaN)
+		rate: float 				minimum ratio of NaN/non-NaN that can be allowed in a column 
+							if count of most non-NaN's in a column in the entire dataset is N, 
+							a column C must have a ratio of C_count(NaN):C_N that is greater than rate, or it gets dropped)
 		drop_cols: list 			list of columns to be dropped
 		"""
 		max_non_nans = 0
