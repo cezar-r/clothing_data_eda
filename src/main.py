@@ -16,7 +16,7 @@ def main():
 	# d = Data(auto_load = False)
 	# df = d.load_data()
 	
-	eda = EDA(df)
+	eda = EDA(df, save_images = False)
 
 	# plots count of each rating
 	eda.ratings_counts()
@@ -56,7 +56,12 @@ def main():
 
 	# plots the fit feedback based on the two different user attributes
 	eda.fit_feedback_vs_user_attribute()
-	
+
+	# plots the number of ratings each year
+	eda.ratings_per_year()
+
+	# plots the number of ratings each category got each year
+	eda.category_popular_per_year()
 	
 if __name__ == '__main__':
 	main()

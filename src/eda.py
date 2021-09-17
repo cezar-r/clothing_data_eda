@@ -13,9 +13,10 @@ import matplotlib.pyplot as plt
 class EDA:
 	"""Object that is used for the main data analytics"""
 
-	def __init__(self, data, style = "dark_background"):
+	def __init__(self, data, save_images = True, style = "dark_background"):
 		plt.style.use(style)
 		self.data = data
+		self.save_img = save_images
 
 
 	def ratings_counts(self, show_total = True, show_avg = True, save_img = True):
@@ -42,13 +43,29 @@ class EDA:
 		ax.set_ylabel("Count")
 		ax.set_xlabel("Rating")
 		plt.tight_layout()
-		if save_img:
+		if self.save_img:
 			plt.savefig(f'../images/{og_title_text.replace(" ", "_")}.png')
 		else:
 			plt.show()
 
 
-	def _plotting_helper(self, show, grouping_column, title_text, xlabel, mean = True, reverse = False, sort = True, save_img = True):
+	def _sort_two_lists(self, arr_idx, x, y):
+		"""Helper function that sorts two list based on the order of one list
+
+		Parameters
+		----------
+		arr_idx: int 			the array who's sorted order is going to dictate the order of the other array
+		x: arr 					one of the arrays being sorted
+		y: arr 					one of the arrays being sorted
+		"""
+		zipped_lists = zip(x, y)
+		sorted_pairs = sorted(zipped_lists, key = lambda x: x[arr_idx])
+		tuples = zip(*sorted_pairs)
+		x, y = [list(tuple) for tuple in tuples]
+		return x, y
+
+
+	def _plotting_helper(self, show, grouping_column, title_text, xlabel, mean = True, reverse = False, sortx = False, sorty = True, save_img = True):
 		"""Helper function that handles most of the plotting
 
 		Parameters
@@ -59,44 +76,49 @@ class EDA:
 		xlabel: str 			label for x-axis
 		mean: bool 				if true, the mean of the y-values will be plotted. otherwise, the count will be plotted
 		reverse: bool 			if true, the values for the x-axis are flipped. mainly used for least_popular_product methods
-		sort: bool 				if true, bars will be sorted in ascending order
+		sortx: bool				if true, bars will be sorted based on x-values
+		sorty: bool 			if true, bars will be sorted based on y-values
 		save_img: bool 			if true, graph gets saved. otherwise graph gets displayed
 		"""
 		if reverse:
 			item_ids = self.data[grouping_column].value_counts().index.values[::-1][:show]
 		else:
 			item_ids = self.data[grouping_column].value_counts().index.values[:show]
+
 		x = []
 		y = []
 
 		items_group = self.data.groupby(grouping_column)
-		for _id, table in items_group:
-			if _id in item_ids:
-				x.append(str(_id))
-				if mean:
-					y.append(table.rating.mean())
-				else:
-					y.append(table.rating.count())
+		for _id in item_ids:
+			for _item_id, table in items_group:
+				if _id == _item_id:
+					x.append(str(_id))
+					if mean:
+						ylabel = 'Rating'
+						y.append(table.rating.mean())
+					else:
+						ylabel = 'Count'
+						y.append(table.rating.count())
 
-		if sort:
-			zipped_lists = zip(x, y)
-			sorted_pairs = sorted(zipped_lists, key = lambda x: x[1])
-			tuples = zip(*sorted_pairs)
-			x, y = [list(tuple) for tuple in tuples]
+		if sorty:
+			x, y, = self._sort_two_lists(1, x, y)
+		elif sortx:
+			x, y, = self._sort_two_lists(0, x, y)
 
 		og_title_text = title_text
-		title_text += f'\nAverage - {round(np.mean(y), 2)}'
+		if len(x) > 2:
+			title_text += f'\nAverage - {round(np.mean(y), 2)}'
 		if len(x) > 20:
-			plt.figure(figsize = (len(x) / 3, 5))
-
-		fig, ax = plt.subplots()
+			fig, ax = plt.subplots(figsize = (len(x) / 3, 5))
+		else:
+			fig, ax = plt.subplots()
 		ax.set_title(title_text)
 		ax.set_xlabel(xlabel)
-		ax.set_ylabel('Rating')
+		ax.set_ylabel(ylabel)
 		ax.bar(x, y)
 		ax.set_xticklabels(x, rotation = 45)
 		plt.tight_layout()
-		if save_img:
+		if self.save_img:
 			plt.savefig(f'../images/{og_title_text.replace(" ", "_")}.png')
 		else:
 			plt.show()
@@ -141,8 +163,58 @@ class EDA:
 		ax.set_xlabel("Feedback")
 		ax.set_ylabel("Counts")
 		plt.tight_layout()
-		if save_img:
+		if self.save_img:
 			plt.savefig(f'../images/{title_text.replace(" ", "_")}.png')
+		else:
+			plt.show()
+
+
+	def ratings_per_year(self):
+		"""Plots the number of ratings each year"""
+		grouped_years= self.data.groupby('year')
+		x = []
+		y = []
+		for year, table in grouped_years:
+			x.append(year)
+			y.append(table.rating.count())
+
+		fig, ax = plt.subplots()
+		ax.plot(x, y)
+		ax.set_title('# of Ratings Each Year')
+		ax.set_xlabel('Year')
+		ax.set_ylabel('# of Ratings')
+
+		if self.save_img:
+			plt.savefig(f'../images/Ratings_per_Year.png')
+		else:
+			plt.show()
+
+
+	def category_popular_per_year(self):
+		"""Plots the number of ratings each category got each year"""
+		categories_dict = {}
+		x = []
+		grouped_categories = self.data.groupby('category')
+		grouped_years = self.data.groupby('year')
+		for cat, cat_table in grouped_categories:
+			for year, year_table in grouped_years:
+				if cat in categories_dict:
+					categories_dict[cat].append(year_table['category'][year_table['category'] == cat].count())
+				else:
+					categories_dict[cat] = [year_table['category'][year_table['category'] == cat].count()]
+				if year not in x:
+					x.append(year)
+		
+		fig, ax = plt.subplots(figsize = (12, 6))
+		ax.set_title('Category Popularity per Year')
+		ax.set_xlabel('Year')
+		ax.set_ylabel('Count')
+		for k in categories_dict:
+			ax.plot(x, categories_dict[k], label = k)
+		plt.legend()
+
+		if self.save_img:
+			plt.savefig('../images/Category_Popularity_per_Year.png')
 		else:
 			plt.show()
 
@@ -154,7 +226,7 @@ class EDA:
 		----------
 		show: int 				number of bars to be displayed on chart
 		"""
-		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID')
+		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID', sorty = False)
 
 
 	def ratings_per_product_least_popular(self, show = 30):
@@ -164,7 +236,7 @@ class EDA:
 		----------
 		show: int 				number of bars to be displayed on chart
 		"""
-		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Least Popular Products ({show})', xlabel = 'Product ID', reverse = True)
+		self._plotting_helper(show, 'item_id', title_text = f'Average Ratings per Product - Least Popular Products ({show})', xlabel = 'Product ID', reverse = True, sorty = False)
 
 
 	def ratings_count_per_product_most_popular(self, show = 30):
@@ -174,7 +246,7 @@ class EDA:
 		----------
 		show: int 				number of bars to be displayed on chart
 		"""
-		self._plotting_helper(show, 'item_id', title_text = f'Total Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID',  mean = False)
+		self._plotting_helper(show, 'item_id', title_text = f'Total Ratings per Product - Most Popular Products ({show})', xlabel = 'Product ID',  mean = False, sorty = False)
 
 
 	def ratings_count_per_product_least_popular(self, show = 30):
@@ -204,7 +276,7 @@ class EDA:
 		----------
 		show: int 				number of bars to be displayed on chart
 		"""
-		self._plotting_helper(show, 'category', title_text = 'Total Ratings per Product', xlabel = 'Category', mean = False)
+		self._plotting_helper(show, 'category', title_text = 'Total Ratings per Category', xlabel = 'Category', mean = False)
 
 
 	def rating_per_year(self, show=10):
@@ -214,7 +286,7 @@ class EDA:
 		----------
 		show: int 				number of bars to be displayed on chart
 		"""
-		self._plotting_helper(show, 'year', title_text = 'Average Rating per Year', xlabel = 'Year', sort = False)
+		self._plotting_helper(show, 'year', title_text = 'Average Rating per Year', xlabel = 'Year', sortx = True, sorty = False)
 
 
 	def fit_feedback(self, show = 5):
@@ -254,7 +326,7 @@ class EDA:
 		----------
 		scaled: bool			if true, the two bar plots will be scaled based on their maximum values
 		"""
-		self._attributes_helper("model_attr", title_text = 'Fit Feedback vs Model Attributes', scaled)
+		self._attributes_helper("model_attr", title_text = 'Fit Feedback vs Model Attributes', scaled = scaled)
 
 
 	def fit_feedback_vs_user_attribute(self, scaled = False):
@@ -264,4 +336,14 @@ class EDA:
 		----------
 		scaled: bool 			if true, the two bar plots will be scaled based on their maximum values
 		"""
-		self._attributes_helper("user_attr", title_text = 'Fit Feedback vs User Attributes', scaled)
+		self._attributes_helper("user_attr", title_text = 'Fit Feedback vs User Attributes', scaled = scaled)
+
+
+if __name__ == '__main__':
+	from data_loader import Data
+
+	d = Data()
+	df = d.dataframe
+
+	eda = EDA(df, save_images = False)
+	eda.category_popular_per_year()

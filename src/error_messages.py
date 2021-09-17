@@ -2,7 +2,7 @@
 # coding: utf-8
 
 '''
-This file is used to throw custom errors through the ArgumentError object
+This file is used to throw custom errors
 '''
 
 class ArgumentError(Exception):
